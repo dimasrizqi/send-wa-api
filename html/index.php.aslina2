@@ -1,0 +1,64 @@
+<?php
+$url=$_SERVER['REQUEST_URI'];
+header("Refresh: 5; URL=$url"); 
+require "vendor/autoload.php";
+date_default_timezone_set('Asia/Jakarta');
+/*
+$token 				= '9gyf19de6dfp5ya0';
+$nomor_handphone 	= '6287770696141';
+*/
+$ipaddress = '';
+if (getenv('HTTP_CLIENT_IP'))
+    $ipaddress = getenv('HTTP_CLIENT_IP');
+else if(getenv('HTTP_X_FORWARDED_FOR'))
+    $ipaddress = getenv('HTTP_X_FORWARDED_FOR');
+else if(getenv('HTTP_X_FORWARDED'))
+    $ipaddress = getenv('HTTP_X_FORWARDED');
+else if(getenv('HTTP_FORWARDED_FOR'))
+    $ipaddress = getenv('HTTP_FORWARDED_FOR');
+else if(getenv('HTTP_FORWARDED'))
+   $ipaddress = getenv('HTTP_FORWARDED');
+else if(getenv('REMOTE_ADDR'))
+    $ipaddress = getenv('REMOTE_ADDR');
+else
+    $ipaddress = 'tidak diketahui';
+//skrip baca output snotr log
+//make string src addres
+
+$file = '/var/log/auth.log';
+$searchfor = 'ICMP';
+
+// the following line prevents the browser from parsing this as HTML.
+header('Content-Type: text/plain');
+
+// get the file contents, assuming the file to be readable (and exist)
+$contents = file_get_contents($file);
+// escape special characters in the query
+$pattern = preg_quote($searchfor, '/');
+// finalise the regular expression, matching the whole line
+$pattern = "/^.*$pattern.*\$/m";
+// search, and store all matching occurences in $matches
+if(preg_match_all($pattern, $contents, $matches)){
+/*
+   echo "Notifikasi telah dikirim ke nomor" .$nomor_handphone", cek whatsapp\n";
+   #echo implode("\n", $matches[0]);
+$message = 'ada serangan portscan dari ip '.$ipaddress.' tanggal '.date('Y-m-d H:i:s A').' ';
+$client = new \GuzzleHttp\Client();
+$res = $client->request('POST', 'https://eu2.chat-api.com/instance6549/message?token='.$token.'&phone='.$nomor_handphone.'&body='.$message.'');
+echo $res->getStatusCode();
+echo $res->getBody();
+*/
+require "vendor/main.php";
+}
+else{
+   echo "Tidak ada serangan";
+}
+
+/*
+$message = 'ada serangan portscan dari ip '.$ipaddress.' tanggal '.date('Y-m-d H:i:s A').' ';
+$client = new \GuzzleHttp\Client();
+$res = $client->request('POST', 'https://eu2.chat-api.com/instance6549/message?token='.$token.'&phone='.$nomor_handphone.'&body='.$message.'');
+echo $res->getStatusCode();
+echo $res->getBody();
+*/
+?>
